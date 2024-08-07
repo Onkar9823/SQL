@@ -1,1 +1,58 @@
+CREATE TABLE Bus (
+    bus_no INT PRIMARY KEY,
+    b_capacity INT NOT NULL,
+    deport_name VARCHAR(20)
+);
+CREATE TABLE Route (
+    route_no INT PRIMARY KEY,
+    source CHAR(20),
+    destination CHAR(20),
+    no_of_stations INT
+);
+CREATE TABLE Driver (
+    driver_no INT PRIMARY KEY,
+    driver_name CHAR(20),
+    license_no INT UNIQUE,
+    address CHAR(20),
+    d_age INT,
+    salary FLOAT
+);
+ALTER TABLE Bus
+ADD CONSTRAINT fk_route
+FOREIGN KEY (route_no) REFERENCES Route(route_no);
 
+CREATE TABLE Bus_Driver (
+    bus_no INT,
+    driver_no INT,
+    date_of_duty_allotted DATE,
+    shift INT CHECK (shift IN (1, 2)),
+    PRIMARY KEY (bus_no, driver_no, date_of_duty_allotted),
+    FOREIGN KEY (bus_no) REFERENCES Bus(bus_no),
+    FOREIGN KEY (driver_no) REFERENCES Driver(driver_no)
+);
+INSERT INTO Bus (bus_no, b_capacity, deport_name) VALUES
+(101, 50, 'Central Depot'),
+(102, 40, 'North Depot'),
+(103, 55, 'South Depot');
+
+INSERT INTO Route (route_no, source, destination, no_of_stations) VALUES
+(1, 'City Center', 'Uptown', 10),
+(2, 'Downtown', 'Airport', 5),
+(3, 'Suburb', 'City Center', 8);
+
+INSERT INTO Driver (driver_no, driver_name, license_no, address, d_age, salary) VALUES
+(1, 'Ram wale', 123456, '123 Akole', 30, 40000),
+(2, 'Rajendra deshpande', 789012, '456 Sangamner', 28, 42000),
+(3, 'shivansh desai', 345678, '789 Nashik', 35, 45000);
+
+INSERT INTO Bus_Driver (bus_no, driver_no, date_of_duty_allotted, shift) VALUES
+(101, 1, '2024-08-07', 1),
+(102, 2, '2024-08-07', 2),
+(103, 3, '2024-08-07', 1),
+(101, 2, '2024-08-08', 2),
+(103, 1, '2024-08-08', 1);
+
+CREATE VIEW Drivers_Above_24 AS
+SELECT driver_no, driver_name, license_no, address, d_age, salary
+FROM Driver
+WHERE d_age > 24;
